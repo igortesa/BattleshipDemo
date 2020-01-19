@@ -47,4 +47,5 @@ public class Board {
         frames[7] = new Line(x+300+offset, y+370-offset, x+300+offset, y+670+offset);
     }
 
+
 }

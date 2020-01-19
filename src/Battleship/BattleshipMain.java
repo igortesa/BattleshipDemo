@@ -1,7 +1,6 @@
 package Battleship;
 
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -9,6 +8,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
@@ -30,8 +30,14 @@ public class BattleshipMain extends Application{
     private Button revealMyShipsButton = new Button("mReveal");
     private Button revealEnemyShipsButoon = new Button("eReveal");
     private Label announcement = new Label("Place ships and press\nthe Dive-Button!!!");
+   HBox enemyHealth = new HBox();
+   HBox playerHealth = new HBox();
+
     private boolean play;
-    protected int numberOfRechteClick = 0;
+  public int numberOfRechteClick = 0;
+   public int eHealth = 14;
+   public int pHealth = 14;
+
 
     public BattleshipMain() throws FileNotFoundException {
     }
@@ -41,7 +47,7 @@ public class BattleshipMain extends Application{
     }
 
     @Override
-    public void start(Stage stage) throws Exception {
+    public void start(Stage stage) {
         stage.setTitle("BATTLESHIP FIRST TRY");
 
         Group root = new Group();
@@ -49,11 +55,11 @@ public class BattleshipMain extends Application{
 
         Scene scene = new Scene(root,1200, 750, Color.DEEPSKYBLUE);
         stage.setScene(scene);
+        stage.setFullScreen(true);
         stage.show();
 
         startGame();
     }
-
     private Group createComponents(){
         Group components = new Group();
 
@@ -80,11 +86,13 @@ public class BattleshipMain extends Application{
 
         //Positionierung Label
         announcement.setPrefSize(300, 100);
-        announcement.setTranslateX(800);
-        announcement.setTranslateY(50);
+        announcement.setTranslateX(50);  // 800
+        announcement.setTranslateY(350); // 50
         double max_font_size =20.0;
         announcement.setFont(new Font(max_font_size));
 
+        // Position of health Hbox
+        createHealth();
 
         for(int i=0; i<10;i++){
             for(int j=0;j<10;j++){
@@ -114,7 +122,7 @@ public class BattleshipMain extends Application{
             }
         }
 
-        components.getChildren().addAll(restartbutton, invisMyShipsButton, revealMyShipsButton, invisEnemyShipsButton, revealEnemyShipsButoon, announcement);
+        components.getChildren().addAll(enemyHealth,playerHealth,restartbutton, invisMyShipsButton, revealMyShipsButton, invisEnemyShipsButton, revealEnemyShipsButoon, announcement);
         return components;
     }
 
@@ -127,116 +135,116 @@ public class BattleshipMain extends Application{
                 int finalJ = j;
                 int finalI = i;
                 //hier gehe ich alle Schiffe mir dem Eventhander durch
-                Ships.allShips[finalI][finalJ].addEventHandler(MouseEvent.ANY, new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        //was passiert wenn ich eines der Schiffe mit der Linken Maustaste anklicke UND gedrückt halte. Die if condition da ich nicht will das das alles für transparente schiffe gilt
-                        //in dieser if-condition wird der großteil des Programms landen, da beim zB loslassen eines Schiffes sehr viel passiert. (Koordinaten korregieren, auf interesection kontrollieren, ...)
-                        if(Ships.allShips[finalI][finalJ].getFill() != Color.TRANSPARENT){
-                            //was passiert bei gedrückter linker maustaste
-                            if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED && mouseEvent.getButton() == MouseButton.PRIMARY) {
-                                Ships.allShips[finalI][finalJ].setX(mouseEvent.getSceneX()-Ships.allShips[finalI][finalJ].getWidth()/2);  //sieht kompliziert aus ist aber nur dazu da das schiff zu zentrieren
-                                Ships.allShips[finalI][finalJ].setY(mouseEvent.getSceneY()-Ships.allShips[finalI][finalJ].getHeight()/2);
-                            }
-
-                            //was passiert wenn ich die Mause ziehe UND (während) die linke Maustaste gerdrückt ist
-                            if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED && mouseEvent.getButton() == MouseButton.PRIMARY){
-                                Ships.allShips[finalI][finalJ].setX(mouseEvent.getX()-15);//-Ships.allShips[finalI][finalJ].getWidth()/2);
-                                Ships.allShips[finalI][finalJ].setY(mouseEvent.getY()-15);//-Ships.allShips[finalI][finalJ].getHeight()/2);
-                            }
-
-                            //was passiert wenn ich ein Schiff mit der rechten Maustaste anklicke
-                            if(mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && mouseEvent.getButton() == MouseButton.SECONDARY){
-                                //Ships.turnShip(finalI, finalJ);
-                                double z; //zwischenspeicher für tausch
-                                z = Ships.allShips[finalI][finalJ].getWidth();
-                                Ships.allShips[finalI][finalJ].setWidth(Ships.allShips[finalI][finalJ].getHeight());
-                                Ships.allShips[finalI][finalJ].setHeight(z);
-                                numberOfRechteClick++;
-                                if(numberOfRechteClick%2==0) {
-                                    Ships.allShips[finalI][finalJ].setFill(new ImagePattern(MyMethods.getShipPattern(finalJ + 10)));
-                                } else {
-                                    Ships.allShips[finalI][finalJ].setFill(new ImagePattern(MyMethods.getShipPattern(finalJ)));
-                                }
-                                intersection(finalI, finalJ);
-                            }
-
-                            //was passiert wenn ich das Schiff loslasse? -> Mittelpunkt des ersten "quadrats" des Schiffes soll gleich Mittelpunkt des Quatrads sein über dem die Maus sich befindet
-                            if(mouseEvent.getButton() == MouseButton.PRIMARY && mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED){
-                                double mouseX, mouseY;
-                                mouseX = mouseEvent.getSceneX();
-                                mouseY = mouseEvent.getSceneY();
-                                for(int i=0;i<10;i++){
-                                    for(int j=0;j<10;j++){
-                                        if(Board.myBoard[i][j].getX() <= mouseX && mouseX <= Board.myBoard[i][j].getX()+30){
-                                            if(Board.myBoard[i][j].getY() <= mouseY && mouseY <= Board.myBoard[i][j].getY()+30){
-                                                //System.out.println(""+i+"\n"+j);
-                                                double middleX, middleY; //mitte des Kästchens über welchem die Maus ist, dieses muss gleich der Mitte des Schiffes werden
-                                                middleX = Board.myBoard[i][j].getX()+Board.myBoard[i][j].getWidth()/2;
-                                                middleY = Board.myBoard[i][j].getY()+Board.myBoard[i][j].getHeight()/2;
-
-                                                Ships.allShips[finalI][finalJ].setX(middleX-Board.myBoard[i][j].getWidth()/2);
-                                                Ships.allShips[finalI][finalJ].setY(middleY-Board.myBoard[i][j].getHeight()/2);
-                                                if(finalI == 1){
-                                                    Ships.inField[finalJ+5*finalI] = true;
-                                                }
-                                            }
-                                        }
-                                        if(Board.enemyBoard[i][j].getX() <= mouseX && mouseX <= Board.enemyBoard[i][j].getX()+30){
-                                            if(Board.enemyBoard[i][j].getY() <= mouseY && mouseY <= Board.enemyBoard[i][j].getY()+30){
-                                                //System.out.println(""+i+"\n"+j);
-                                                double middleX, middleY; //mitte des Kästchens über welchem die Maus ist, dieses muss gleich der Mitte des Schiffes werden
-                                                middleX = Board.enemyBoard[i][j].getX()+Board.enemyBoard[i][j].getWidth()/2;
-                                                middleY = Board.enemyBoard[i][j].getY()+Board.enemyBoard[i][j].getHeight()/2;
-
-                                                Ships.allShips[finalI][finalJ].setX(middleX-Board.enemyBoard[i][j].getWidth()/2);
-                                                Ships.allShips[finalI][finalJ].setY(middleY-Board.enemyBoard[i][j].getHeight()/2);
-                                                if(finalI == 0){
-                                                    Ships.inField[finalJ+5*finalI] = true;
-                                                }
-                                            }
-                                        }
-                                        //Falls schiff vom board weggezogen wird
-                                        if(Ships.allShips[finalI][finalJ].getX() < Board.enemyBoard[0][0].getX()){
-                                            Ships.inField[finalJ+5*finalI] = false;
-                                        }
-                                    }
-                                }
-                                //Überprüfung auf Intersection, in Methode da wsl öfter verwendet wird
-                                intersection(finalI, finalJ);
-                                hideEnemyShips();
-                                hidePlayerShips();
-
-                            }
+                Ships.allShips[finalI][finalJ].addEventHandler(MouseEvent.ANY, mouseEvent -> {
+                    //was passiert wenn ich eines der Schiffe mit der Linken Maustaste anklicke UND gedrückt halte. Die if condition da ich nicht will das das alles für transparente schiffe gilt
+                    //in dieser if-condition wird der großteil des Programms landen, da beim zB loslassen eines Schiffes sehr viel passiert. (Koordinaten korregieren, auf interesection kontrollieren, ...)
+                    if(Ships.allShips[finalI][finalJ].getFill() != Color.TRANSPARENT){
+                        //was passiert bei gedrückter linker maustaste
+                        if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED && mouseEvent.getButton() == MouseButton.PRIMARY) {
+                            Ships.allShips[finalI][finalJ].setX(mouseEvent.getSceneX()-Ships.allShips[finalI][finalJ].getWidth()/2);  //sieht kompliziert aus ist aber nur dazu da das schiff zu zentrieren
+                            Ships.allShips[finalI][finalJ].setY(mouseEvent.getSceneY()-Ships.allShips[finalI][finalJ].getHeight()/2);
                         }
-                        //Was passiert wenn ich ein Schiff anklicke das transparent ist?
-                        if(Ships.allShips[finalI][finalJ].getFill() == Color.TRANSPARENT){
-                            if(mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && play){
-                                double mouseX, mouseY;
-                                mouseX = mouseEvent.getSceneX();
-                                mouseY = mouseEvent.getSceneY();
-                                //Ich schaue nach in welchem Feld sich die Maus befindet während das transparente Schiff angeklickt wird, dieses wird rot gefärbt
-                                for(int i=0;i<10;i++) {
-                                    for (int j=0; j<10; j++){
-                                        if(Board.myBoard[i][j].getX() < mouseX && mouseX < Board.myBoard[i][j].getX()+30){
-                                            if(Board.myBoard[i][j].getY() < mouseY && mouseY < Board.myBoard[i][j].getY()+30){
-                                              bombSound();
-                                                Board.myBoard[i][j].setFill(new ImagePattern(MyMethods.getFireImage()));
-                                               //Board.myBoard[i][j].setFill(Color.RED);
 
-                                            }
-                                        }
-                                        if(Board.enemyBoard[i][j].getX() < mouseX && mouseX < Board.enemyBoard[i][j].getX()+30){
-                                            if(Board.enemyBoard[i][j].getY() < mouseY && mouseY < Board.enemyBoard[i][j].getY()+30){
-                                               bombSound();
-                                                Board.enemyBoard[i][j].setFill(new ImagePattern(MyMethods.getFireImage()));
-                                              //  Board.enemyBoard[i][j].setFill(Color.RED);
+                        //was passiert wenn ich die Mause ziehe UND (während) die linke Maustaste gerdrückt ist
+                        if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED && mouseEvent.getButton() == MouseButton.PRIMARY){
+                            Ships.allShips[finalI][finalJ].setX(mouseEvent.getX()-15);//-Ships.allShips[finalI][finalJ].getWidth()/2);
+                            Ships.allShips[finalI][finalJ].setY(mouseEvent.getY()-15);//-Ships.allShips[finalI][finalJ].getHeight()/2);
+                        }
+
+                        //was passiert wenn ich ein Schiff mit der rechten Maustaste anklicke
+                        if(mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && mouseEvent.getButton() == MouseButton.SECONDARY){
+                            //Ships.turnShip(finalI, finalJ);
+                            double z; //zwischenspeicher für tausch
+                            z = Ships.allShips[finalI][finalJ].getWidth();
+                            Ships.allShips[finalI][finalJ].setWidth(Ships.allShips[finalI][finalJ].getHeight());
+                            Ships.allShips[finalI][finalJ].setHeight(z);
+                            numberOfRechteClick++;
+                            if(numberOfRechteClick%2==0) {
+                                Ships.allShips[finalI][finalJ].setFill(new ImagePattern(MyMethods.getShipPattern(finalJ + 10)));
+                            } else {
+                                Ships.allShips[finalI][finalJ].setFill(new ImagePattern(MyMethods.getShipPattern(finalJ)));
+                            }
+                            intersection(finalI, finalJ);
+                        }
+
+                        //was passiert wenn ich das Schiff loslasse? -> Mittelpunkt des ersten "quadrats" des Schiffes soll gleich Mittelpunkt des Quatrads sein über dem die Maus sich befindet
+                        if(mouseEvent.getButton() == MouseButton.PRIMARY && mouseEvent.getEventType() == MouseEvent.MOUSE_RELEASED){
+                            double mouseX, mouseY;
+                            mouseX = mouseEvent.getSceneX();
+                            mouseY = mouseEvent.getSceneY();
+                            for(int i1 = 0; i1 <10; i1++){
+                                for(int j1 = 0; j1 <10; j1++){
+                                    if(Board.myBoard[i1][j1].getX() <= mouseX && mouseX <= Board.myBoard[i1][j1].getX()+30){
+                                        if(Board.myBoard[i1][j1].getY() <= mouseY && mouseY <= Board.myBoard[i1][j1].getY()+30){
+                                            //System.out.println(""+i+"\n"+j);
+                                            double middleX, middleY; //mitte des Kästchens über welchem die Maus ist, dieses muss gleich der Mitte des Schiffes werden
+                                            middleX = Board.myBoard[i1][j1].getX()+Board.myBoard[i1][j1].getWidth()/2;
+                                            middleY = Board.myBoard[i1][j1].getY()+Board.myBoard[i1][j1].getHeight()/2;
+
+                                            Ships.allShips[finalI][finalJ].setX(middleX-Board.myBoard[i1][j1].getWidth()/2);
+                                            Ships.allShips[finalI][finalJ].setY(middleY-Board.myBoard[i1][j1].getHeight()/2);
+                                            if(finalI == 1){
+                                                Ships.inField[finalJ+5*finalI] = true;
                                             }
                                         }
                                     }
-                                }
+                                    if(Board.enemyBoard[i1][j1].getX() <= mouseX && mouseX <= Board.enemyBoard[i1][j1].getX()+30){
+                                        if(Board.enemyBoard[i1][j1].getY() <= mouseY && mouseY <= Board.enemyBoard[i1][j1].getY()+30){
+                                            //System.out.println(""+i+"\n"+j);
+                                            double middleX, middleY; //mitte des Kästchens über welchem die Maus ist, dieses muss gleich der Mitte des Schiffes werden
+                                            middleX = Board.enemyBoard[i1][j1].getX()+Board.enemyBoard[i1][j1].getWidth()/2;
+                                            middleY = Board.enemyBoard[i1][j1].getY()+Board.enemyBoard[i1][j1].getHeight()/2;
 
+                                            Ships.allShips[finalI][finalJ].setX(middleX-Board.enemyBoard[i1][j1].getWidth()/2);
+                                            Ships.allShips[finalI][finalJ].setY(middleY-Board.enemyBoard[i1][j1].getHeight()/2);
+                                            if(finalI == 0){
+                                                Ships.inField[finalJ+5*finalI] = true;
+                                            }
+                                        }
+                                    }
+                                    //Falls schiff vom board weggezogen wird
+                                    if(Ships.allShips[finalI][finalJ].getX() < Board.enemyBoard[0][0].getX()){
+                                        Ships.inField[finalJ+5*finalI] = false;
+                                    }
+                                }
                             }
+                            //Überprüfung auf Intersection, in Methode da wsl öfter verwendet wird
+                            intersection(finalI, finalJ);
+                            hideEnemyShips();
+                            hidePlayerShips();
+
+                        }
+                    }
+                    //Was passiert wenn ich ein Schiff anklicke das transparent ist?
+                    if(Ships.allShips[finalI][finalJ].getFill() == Color.TRANSPARENT){
+                        if(mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && play){
+                            double mouseX, mouseY;
+                            mouseX = mouseEvent.getSceneX();
+                            mouseY = mouseEvent.getSceneY();
+                            //Ich schaue nach in welchem Feld sich die Maus befindet während das transparente Schiff angeklickt wird, dieses wird rot gefärbt
+                            for(int i1 = 0; i1 <10; i1++) {
+                                for (int j1 = 0; j1 <10; j1++){
+                                    if(Board.myBoard[i1][j1].getX() < mouseX && mouseX < Board.myBoard[i1][j1].getX()+30){
+                                        if(Board.myBoard[i1][j1].getY() < mouseY && mouseY < Board.myBoard[i1][j1].getY()+30){
+                                            updatePlayerHealth(pHealth);
+
+                                          bombSound();
+                                            Board.myBoard[i1][j1].setFill(new ImagePattern(MyMethods.getFireImage()));
+                                           //Board.myBoard[i][j].setFill(Color.RED);
+
+                                        }
+                                    }
+                                    if(Board.enemyBoard[i1][j1].getX() < mouseX && mouseX < Board.enemyBoard[i1][j1].getX()+30){
+                                        if(Board.enemyBoard[i1][j1].getY() < mouseY && mouseY < Board.enemyBoard[i1][j1].getY()+30){
+                                           bombSound();
+                                           updateEnemyHealth(eHealth);
+                                            Board.enemyBoard[i1][j1].setFill(new ImagePattern(MyMethods.getFireImage()));
+                                          //  Board.enemyBoard[i][j].setFill(Color.RED);
+                                        }
+                                    }
+                                }
+                            }
+
                         }
                     }
                 });
@@ -248,24 +256,18 @@ public class BattleshipMain extends Application{
             for(int j=0; j<10; j++){
                 int finalI = i;
                 int finalJ = j;
-                Board.enemyBoard[i][j].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>(){
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        //Das Feld in dem ich mich befinde darf natürlich nicht rot sein
-                            if(Board.enemyBoard[finalI][finalJ].getFill() != Color.RED && play){
-                              waterSound();
-                                Board.enemyBoard[finalI][finalJ].setFill(Color.GREEN);
+                Board.enemyBoard[i][j].addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+                    //Das Feld in dem ich mich befinde darf natürlich nicht rot sein
+                    if (Board.enemyBoard[finalI][finalJ].getFill() != Color.RED && play) {
+                        waterSound();
+                        Board.enemyBoard[finalI][finalJ].setFill(Color.GREEN);
 
-                            }
                     }
                 });
-                Board.myBoard[i][j].addEventHandler(MouseEvent.MOUSE_CLICKED, new EventHandler<MouseEvent>(){
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        if(Board.myBoard[finalI][finalJ].getFill() != Color.RED && play){
-                           waterSound();
-                            Board.myBoard[finalI][finalJ].setFill(Color.GREEN);
-                        }
+                Board.myBoard[i][j].addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
+                    if(Board.myBoard[finalI][finalJ].getFill() != Color.RED && play){
+                       waterSound();
+                        Board.myBoard[finalI][finalJ].setFill(Color.GREEN);
                     }
                 });
             }
@@ -301,7 +303,32 @@ public class BattleshipMain extends Application{
             play = false;
             //reset Label
             announcement.setText("Place ships and press\nthe Dive-Button!!!");
+            // reset health
+            if(eHealth>0){
+           while(eHealth >= 0){
+                enemyHealth.getChildren().remove(eHealth);
+                eHealth--;
+            }
+            }
+            if(pHealth>0) {
+                while (pHealth >= 0) {
+                  playerHealth.getChildren().remove(pHealth);
+                    pHealth--;
+                }
+            }
+            eHealth=14;
+            pHealth=14;
+            createHealth();
         });
+
+        //was passiert wenn ich den revealEnemyShipsButton drücke?
+        revealEnemyShipsButoon.setOnAction(e -> {
+            for(int j=0; j<5; j++){
+                Ships.allShips[0][j].setFill(Color.DARKRED);
+
+            }
+        });
+
 
         //was passiert wenn ich den invisEnemyShipsButton drücke?
         /*invisEnemyShipsButton.setOnAction(e -> {
@@ -327,14 +354,6 @@ public class BattleshipMain extends Application{
                 play = true;
             }
         }); */
-
-        //was passiert wenn ich den revealEnemyShipsButton drücke?
-        revealEnemyShipsButoon.setOnAction(e -> {
-            for(int j=0; j<5; j++){
-                Ships.allShips[0][j].setFill(Color.DARKRED);
-
-            }
-        });
 
         //was passiert wenn ich den invisMyShipsButton drücke?
       /*  invisMyShipsButton.setOnAction(e -> {
@@ -429,6 +448,7 @@ public class BattleshipMain extends Application{
         if (counter == 10) {
             play = true;
         }
+
     }
 
     public void hidePlayerShips(){
@@ -472,4 +492,27 @@ public class BattleshipMain extends Application{
         //by setting this property to true, the audio will be played
         mediaPlayer.setAutoPlay(true);
     }
+
+    public void updateEnemyHealth(int counter){
+        enemyHealth.getChildren().remove(counter);
+        eHealth--;
+    }
+    public void updatePlayerHealth(int counter){
+        playerHealth.getChildren().remove(counter);
+        pHealth--;
+    }
+
+  public void createHealth(){
+
+      for(int i=0; i<15;i++){
+          enemyHealth.getChildren().add(new Cell(25,25));
+          playerHealth.getChildren().add(new Cell(25,25));
+      }
+      enemyHealth.setTranslateX(800);
+      enemyHealth.setTranslateY(30);
+      playerHealth.setTranslateX(800);
+      playerHealth.setTranslateY(400);
+  }
+
+
 }

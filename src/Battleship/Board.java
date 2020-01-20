@@ -11,19 +11,19 @@ public class Board {
     Rectangle [][] enemyBoard = new Rectangle[10][10];
     Line [] frames = new Line[8];
 
-    public Board()  //konstruktor
+    public Board()  // konstruktor
     {
         for(int j=0;j<10;j++) {
             for (int i = 0; i < 10; i++) {
                 this.enemyBoard[j][i] = new Rectangle(450+30*j, 50+30*i, 30, 30);
-                this.enemyBoard[j][i].setFill(new ImagePattern(MyMethods.getWaterPattern()));
+                this.enemyBoard[j][i].setFill(new ImagePattern(BattleshipMain.getWaterPattern())); // water image pattern
                 this.enemyBoard[j][i].setStroke(Color.WHITE);
             }
         }
         for(int j=0;j<10;j++) {
             for (int i = 0; i < 10; i++) {
                 this.myBoard[j][i] = new Rectangle(450+30*j, 420+30*i, 30, 30);
-                this.myBoard[j][i].setFill(new ImagePattern(MyMethods.getWaterPattern()));
+                this.myBoard[j][i].setFill(new ImagePattern(BattleshipMain.getWaterPattern())); // water image pattern
                 this.myBoard[j][i].setStroke(Color.WHITE);
             }
         }

@@ -4,26 +4,19 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
 
-public class Cell extends Rectangle { // 25px x25px fields on Board
-    public int x, y;
-    public boolean wasShot = false;
-    public int type;
-    public int health;
+public class Cell extends Rectangle {
 
-    public Cell (int type,int a , int b, int c, int d) throws FileNotFoundException {  // 2nd constructor for ships
+    public Cell (int type,int a , int b, int c, int d) {  // 2nd constructor for ships
         super(a,b,c,d);
-        this.type = type;
-        health = type;
-        Image img = MyMethods.getShipPattern(type+10);
+        Image img = BattleshipMain.getShipPattern(type+10);
         setFill(new ImagePattern(img));  // ship pattern for all ships
     }
 
-    public  Cell (int a, int b){
+    public  Cell (int a, int b){ // 3rd constructor for fields of the  health
         super(a,b);
         setStroke(Color.WHITE);
         FileInputStream file = null;

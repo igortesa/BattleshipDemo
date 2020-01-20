@@ -18,8 +18,8 @@ public class Ship{
     public Ship() throws FileNotFoundException {
         for(int i=0;i<2;i++){
             for(int j=0;j<5;j++){
-                this.allShips[i][j] = new Cell( j,50+j*50, 150+350*i, 30, 30+j*30);  //Abstand Höhe, schiffe reihe1 und reihe 2
-                //this.allShips[i][j].setFill(new ImagePattern(MyMethods.getShipPattern(j)));
+                this.allShips[i][j] = new Cell( j,50+j*50, 150+350*i, 30, 30+j*30);  // Abstand Höhe, schiffe reihe1 und reihe 2 , j --> for image pattern
+                //this.allShips[i][j].setFill(new ImagePattern(BattleShipMain.getShipPattern(j)));
                 this.startX[j+5*i] = this.allShips[i][j].getX();
                 this.startY[j+5*i] = this.allShips[i][j].getY();
                 this.inField[j+5*i] = false;

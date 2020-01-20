@@ -1,6 +1,9 @@
 package Battleship;
 
 import javafx.application.Application;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -32,6 +35,8 @@ public class BattleshipMain extends Application{
     private Label announcement = new Label("Place ships and press\nthe Dive-Button!!!");
    HBox enemyHealth = new HBox();
    HBox playerHealth = new HBox();
+    Label eLabel = new Label();
+    Label pLabel = new Label();
 
     private boolean play;
   public int numberOfRechteClick = 0;
@@ -88,8 +93,8 @@ public class BattleshipMain extends Application{
         announcement.setPrefSize(300, 100);
         announcement.setTranslateX(50);  // 800
         announcement.setTranslateY(350); // 50
-        double max_font_size =20.0;
-        announcement.setFont(new Font(max_font_size));
+     //  double max_font_size =20.0;
+        announcement.setFont(new Font(20.0));
 
         // Position of health Hbox
         createHealth();
@@ -122,7 +127,7 @@ public class BattleshipMain extends Application{
             }
         }
 
-        components.getChildren().addAll(enemyHealth,playerHealth,restartbutton, invisMyShipsButton, revealMyShipsButton, invisEnemyShipsButton, revealEnemyShipsButoon, announcement);
+        components.getChildren().addAll(eLabel,pLabel,enemyHealth,playerHealth,restartbutton, invisMyShipsButton, revealMyShipsButton, invisEnemyShipsButton, revealEnemyShipsButoon, announcement);
         return components;
     }
 
@@ -212,41 +217,40 @@ public class BattleshipMain extends Application{
                             intersection(finalI, finalJ);
                             hideEnemyShips();
                             hidePlayerShips();
-
                         }
                     }
                     //Was passiert wenn ich ein Schiff anklicke das transparent ist?
-                    if(Ships.allShips[finalI][finalJ].getFill() == Color.TRANSPARENT){
-                        if(mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && play){
-                            double mouseX, mouseY;
-                            mouseX = mouseEvent.getSceneX();
-                            mouseY = mouseEvent.getSceneY();
-                            //Ich schaue nach in welchem Feld sich die Maus befindet während das transparente Schiff angeklickt wird, dieses wird rot gefärbt
-                            for(int i1 = 0; i1 <10; i1++) {
-                                for (int j1 = 0; j1 <10; j1++){
-                                    if(Board.myBoard[i1][j1].getX() < mouseX && mouseX < Board.myBoard[i1][j1].getX()+30){
-                                        if(Board.myBoard[i1][j1].getY() < mouseY && mouseY < Board.myBoard[i1][j1].getY()+30){
-                                            updatePlayerHealth(pHealth);
+                    if(Ships.allShips[finalI][finalJ].getFill() == Color.TRANSPARENT) {
 
-                                          bombSound();
-                                            Board.myBoard[i1][j1].setFill(new ImagePattern(MyMethods.getFireImage()));
-                                           //Board.myBoard[i][j].setFill(Color.RED);
-
+                            if (mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && play) {
+                                double mouseX, mouseY;
+                                mouseX = mouseEvent.getSceneX();
+                                mouseY = mouseEvent.getSceneY();
+                                //Ich schaue nach in welchem Feld sich die Maus befindet während das transparente Schiff angeklickt wird, dieses wird rot gefärbt
+                                for (int i1 = 0; i1 < 10; i1++) {
+                                    for (int j1 = 0; j1 < 10; j1++) {
+                                        if (Board.myBoard[i1][j1].getX() < mouseX && mouseX < Board.myBoard[i1][j1].getX() + 30) {
+                                            if (Board.myBoard[i1][j1].getY() < mouseY && mouseY < Board.myBoard[i1][j1].getY() + 30) {
+                                               updatePlayerHealth(pHealth); // method call to update health status for enemy player
+                                                bombSound();
+                                               Board.myBoard[i1][j1].setFill(new ImagePattern(MyMethods.getFireImage())); //  changed red color to fire photo
+                                                //Board.myBoard[i][j].setFill(Color.RED);
+                                            }
                                         }
-                                    }
-                                    if(Board.enemyBoard[i1][j1].getX() < mouseX && mouseX < Board.enemyBoard[i1][j1].getX()+30){
-                                        if(Board.enemyBoard[i1][j1].getY() < mouseY && mouseY < Board.enemyBoard[i1][j1].getY()+30){
-                                           bombSound();
-                                           updateEnemyHealth(eHealth);
-                                            Board.enemyBoard[i1][j1].setFill(new ImagePattern(MyMethods.getFireImage()));
-                                          //  Board.enemyBoard[i][j].setFill(Color.RED);
+                                        if (Board.enemyBoard[i1][j1].getX() < mouseX && mouseX < Board.enemyBoard[i1][j1].getX() + 30) {
+                                            if (Board.enemyBoard[i1][j1].getY() < mouseY && mouseY < Board.enemyBoard[i1][j1].getY() + 30) {
+                                                bombSound();
+                                                updateEnemyHealth(eHealth); // method call to update health status for enemy player
+                                                Board.enemyBoard[i1][j1].setFill(new ImagePattern(MyMethods.getFireImage())); //  changed red color to fire photo
+                                                Board.enemyBoard[i1][j1].setOnMouseClicked(null);
+                                                //  Board.enemyBoard[i][j].setFill(Color.RED);
+                                            }
                                         }
                                     }
                                 }
-                            }
 
+                            }
                         }
-                    }
                 });
             }
         }
@@ -421,8 +425,8 @@ public class BattleshipMain extends Application{
 
         if(play){
             announcement.setText("Start!");
-            revealEnemyShipsButoon.setDisable(true); // disable reveal button during  game
-            revealMyShipsButton.setDisable(true);// disable reveal button during  game
+         //   revealEnemyShipsButoon.setDisable(true); // disable reveal button during  game
+          //  revealMyShipsButton.setDisable(true);// disable reveal button during  game
 
         }
     }
@@ -496,10 +500,13 @@ public class BattleshipMain extends Application{
     public void updateEnemyHealth(int counter){
         enemyHealth.getChildren().remove(counter);
         eHealth--;
+        eLabel.setText("Player2 Health: "+(eHealth+1));
     }
     public void updatePlayerHealth(int counter){
         playerHealth.getChildren().remove(counter);
         pHealth--;
+        pLabel.setText("Player1 Health: "+(pHealth+1));
+
     }
 
   public void createHealth(){
@@ -509,10 +516,32 @@ public class BattleshipMain extends Application{
           playerHealth.getChildren().add(new Cell(25,25));
       }
       enemyHealth.setTranslateX(800);
-      enemyHealth.setTranslateY(30);
+      enemyHealth.setTranslateY(80);
       playerHealth.setTranslateX(800);
-      playerHealth.setTranslateY(400);
+      playerHealth.setTranslateY(450);
+      eLabel.setPrefSize(200, 50);
+      pLabel.setPrefSize(200, 50);
+      eLabel.setTranslateX(800);  // 800
+      eLabel.setTranslateY(30); // 50
+      pLabel.setTranslateX(800);  // 800
+      pLabel.setTranslateY(400); // 50
+      eLabel.setFont(new Font(20));
+      pLabel.setFont(new Font(20));
+      eLabel.setText("Player2 Health: "+(eHealth+1));
+      pLabel.setText("Player1 Health: "+(pHealth+1));
+
   }
 
+  public boolean allShipsInField(){
+      int count = 0;
+      for (int a = 0; a < 10; a++) {
+          if (Ships.inField[a]) {
+              count += 1;
+          }
+      }
+      if (count == 9) {
+          return true;
+      } else return false;
+  }
 
 }

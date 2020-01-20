@@ -11,9 +11,7 @@ import java.io.FileNotFoundException;
 
 public class Cell extends Rectangle { // 25px x25px fields on Board
     public int x, y;
-    // public Ship ship = null;
     public boolean wasShot = false;
-   // private Board board;
     public int type;
     public int health;
 

@@ -46,20 +46,18 @@ public class BattleshipMain extends Application{
     private boolean enemyMove = true; // player 1 can play
     private boolean playerMove = false;// player 2 can play
     private boolean play;
-    public int numberOfRechteClick = 0; // number of the right clicks for the ship rotation
+   //  public int numberOfRechteClick = 0; // number of the right clicks for the ship rotation
      public int eHealth = 14; // 14 because Ships array starts with 0 --> 0-14 = 15
     public int pHealth = 14;
 
 
-    public BattleshipMain() throws FileNotFoundException {
-    }
-
-    public static void main(String[] args){
+    public static void main(String[] args)
+    {
         launch();
     }
 
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) {    //Hauptmethode, hier wird das Spiel programmtechnisch gestartet
         stage.setTitle("BATTLESHIP");
 
         Group root = new Group();
@@ -70,8 +68,9 @@ public class BattleshipMain extends Application{
         stage.setFullScreen(true);
         stage.show();
 
-        startGame();
+        startGame();  //Aufruf des Spiels über die Methode "private void startGame()"
     }
+
     private Group createComponents(){
         Group components = new Group();
 
@@ -103,6 +102,7 @@ public class BattleshipMain extends Application{
 
         //Positionierung Label
         announcement.setPrefSize(300, 100);
+        announcement.setWrapText(true);
         announcement.setTranslateX(50);  // 800
         announcement.setTranslateY(350); // 50
         announcement.setFont(new Font(20.0));
@@ -126,8 +126,9 @@ public class BattleshipMain extends Application{
         // Position of health's Hbox
         createHealth();   // method call
 
-        for(int i=0; i<10;i++){
+        for(int i=0; i<10;i++){  //Erstellung des 10x10 Spielfelds für my & enemy
             for(int j=0;j<10;j++){
+                //Erstellung der Linien rund um das 10x10 Feld, Gruen für Myship und Rot für Enemy
                 components.getChildren().addAll(Board.myBoard[i][j], Board.enemyBoard[i][j]);
             }
             //Färben der einzelnen Linien:
@@ -142,7 +143,7 @@ public class BattleshipMain extends Application{
             }
         }
 
-        for(int i=0; i<2;i++){
+        for(int i=0; i<2;i++){  //Loop zur Färbung der Schiffe; 0 = darkred = ENEMYSHIP; 1 = green = MYSHIP;
             for(int j=0;j<5;j++){
                 if(i==0){
                     Ships.allShips[i][j].setFill(Color.DARKRED);
@@ -173,33 +174,37 @@ public class BattleshipMain extends Application{
                 Ships.allShips[finalI][finalJ].addEventHandler(MouseEvent.ANY, mouseEvent -> {
                     //was passiert wenn ich eines der Schiffe mit der Linken Maustaste anklicke UND gedrückt halte. Die if condition da ich nicht will das das alles für transparente schiffe gilt
                     //in dieser if-condition wird der großteil des Programms landen, da beim zB loslassen eines Schiffes sehr viel passiert. (Koordinaten korregieren, auf interesection kontrollieren, ...)
-                    if(Ships.allShips[finalI][finalJ].getFill() != Color.TRANSPARENT){
+                    if(Ships.allShips[finalI][finalJ].getFill() != Color.TRANSPARENT){  // != transparent zur Überprüfung obs das Schiff farbig (momentan DARKRED & GREEN) und damit nicht im Spielmodus befindet
                         //was passiert bei gedrückter linker maustaste
-                        if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED && mouseEvent.getButton() == MouseButton.PRIMARY) {
+                        if (mouseEvent.getEventType() == MouseEvent.MOUSE_PRESSED && mouseEvent.getButton() == MouseButton.PRIMARY) {  //zum Einrasten des Schiffs
                             Ships.allShips[finalI][finalJ].setX(mouseEvent.getSceneX()-Ships.allShips[finalI][finalJ].getWidth()/2);  //sieht kompliziert aus ist aber nur dazu da das schiff zu zentrieren
-                            Ships.allShips[finalI][finalJ].setY(mouseEvent.getSceneY()-Ships.allShips[finalI][finalJ].getHeight()/2);
+                            Ships.allShips[finalI][finalJ].setY(mouseEvent.getSceneY()-Ships.allShips[finalI][finalJ].getHeight()/2); // y Koordinate setzen
                         }
 
                         //was passiert wenn ich die Mause ziehe UND (während) die linke Maustaste gerdrückt ist
-                        if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED && mouseEvent.getButton() == MouseButton.PRIMARY){
-                            Ships.allShips[finalI][finalJ].setX(mouseEvent.getX()-15);//-Ships.allShips[finalI][finalJ].getWidth()/2);
-                            Ships.allShips[finalI][finalJ].setY(mouseEvent.getY()-15);//-Ships.allShips[finalI][finalJ].getHeight()/2);
+                        if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED && mouseEvent.getButton() == MouseButton.PRIMARY){  //zum Einrasten des Schiffs
+                            Ships.allShips[finalI][finalJ].setX(mouseEvent.getX()-15);//-Ships.allShips[finalI][finalJ].getWidth()/2);  // x Koordinate setzen
+                            Ships.allShips[finalI][finalJ].setY(mouseEvent.getY()-15); //-Ships.allShips[finalI][finalJ].getHeight()/2);    // y Koordinate setzen
                         }
 
                         //was passiert wenn ich ein Schiff mit der rechten Maustaste anklicke
-                        if(mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && mouseEvent.getButton() == MouseButton.SECONDARY){
-                            //Ships.turnShip(finalI, finalJ);
+                        if(mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && mouseEvent.getButton() == MouseButton.SECONDARY){ //zum Drehen des Schiffs um 90 Grad Richtung Osten;
+                           //Ships.turnShip(finalI, finalJ);
                             double z; //zwischenspeicher für tausch
                             z = Ships.allShips[finalI][finalJ].getWidth();
                             Ships.allShips[finalI][finalJ].setWidth(Ships.allShips[finalI][finalJ].getHeight());
                             Ships.allShips[finalI][finalJ].setHeight(z);
-                            numberOfRechteClick++;
+
+                            // the bottom commented lines are for ship rotation with image patterns
+                           /* numberOfRechteClick++;
                             if(numberOfRechteClick%2==0) {
                                 Ships.allShips[finalI][finalJ].setFill(new ImagePattern(getShipPattern(finalJ + 10)));
                             } else {
                                 Ships.allShips[finalI][finalJ].setFill(new ImagePattern(getShipPattern(finalJ)));
                             }
+                            */
                             intersection(finalI, finalJ);
+
                         }
 
                         //was passiert wenn ich das Schiff loslasse? -> Mittelpunkt des ersten "quadrats" des Schiffes soll gleich Mittelpunkt des Quatrads sein über dem die Maus sich befindet
@@ -220,6 +225,7 @@ public class BattleshipMain extends Application{
                                             Ships.allShips[finalI][finalJ].setY(middleY-Board.myBoard[i1][j1].getHeight()/2);
                                             if(finalI == 1){
                                                 Ships.inField[finalJ+5*finalI] = true;
+                                                dropSound();
                                             }
                                         }
                                     }
@@ -234,6 +240,7 @@ public class BattleshipMain extends Application{
                                             Ships.allShips[finalI][finalJ].setY(middleY-Board.enemyBoard[i1][j1].getHeight()/2);
                                             if(finalI == 0){
                                                 Ships.inField[finalJ+5*finalI] = true;
+                                                dropSound();
                                             }
                                         }
                                     }
@@ -260,19 +267,21 @@ public class BattleshipMain extends Application{
                                     for (int i1 = 0; i1 < 10; i1++) {
                                         for (int j1 = 0; j1 < 10; j1++) {
                                             if (Board.myBoard[i1][j1].getX() < mouseX && mouseX < Board.myBoard[i1][j1].getX() + 30) {
-                                                if (Board.myBoard[i1][j1].getY() < mouseY && mouseY < Board.myBoard[i1][j1].getY() + 30 && playerMove) {
+                                                if (Board.myBoard[i1][j1].getY() < mouseY && mouseY < Board.myBoard[i1][j1].getY() + 30 && playerMove && !Board.myBoard[i1][j1].wasShoot) {
                                                     updatePlayerHealth(pHealth); // method call to update health state for the player 2
                                                     bombSound();
                                                     Board.myBoard[i1][j1].setFill(new ImagePattern(getFireImage())); //  change red color to fire photo
                                                     //Board.myBoard[i][j].setFill(Color.RED);
+                                                    Board.myBoard[i1][j1].wasShoot=true;
                                                     playerMove=true;
                                                 }
                                             }
                                             if (Board.enemyBoard[i1][j1].getX() < mouseX && mouseX < Board.enemyBoard[i1][j1].getX() + 30) {
-                                                if (Board.enemyBoard[i1][j1].getY() < mouseY && mouseY < Board.enemyBoard[i1][j1].getY() + 30 && enemyMove) {
+                                                if (Board.enemyBoard[i1][j1].getY() < mouseY && mouseY < Board.enemyBoard[i1][j1].getY() + 30 && enemyMove && !Board.enemyBoard[i1][j1].wasShoot) {
                                                     bombSound();
                                                     updateEnemyHealth(eHealth); // method call to update health state for the player 1
                                                     Board.enemyBoard[i1][j1].setFill(new ImagePattern(getFireImage())); //  change red color to fire photo
+                                                    Board.enemyBoard[i1][j1].wasShoot=true;
                                                     //  Board.enemyBoard[i][j].setFill(Color.RED);
                                                     enemyMove=true;
                                                 }
@@ -448,7 +457,7 @@ public class BattleshipMain extends Application{
         userInteraction();
 
         if(play){
-            announcement.setText("Start!\nPlayer 1 your turn!");
+            announcement.setText("Start!\n --> Player 1 your turn!");
         }
     }
 
@@ -512,6 +521,15 @@ public class BattleshipMain extends Application{
     public void bombSound(){  // it plays bomb sound
         //Instantiating Media class
         Media media = new Media(new File(System.getProperty("user.dir") + "\\src\\res\\bomb.mp3").toURI().toString());
+        //Instantiating MediaPlayer class
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        //by setting this property to true, the audio will be played
+        mediaPlayer.setAutoPlay(true);
+    }
+
+    public void dropSound(){  // it plays drop sound
+        //Instantiating Media class
+        Media media = new Media(new File(System.getProperty("user.dir") + "\\src\\res\\drop.mp3").toURI().toString());
         //Instantiating MediaPlayer class
         MediaPlayer mediaPlayer = new MediaPlayer(media);
         //by setting this property to true, the audio will be played
@@ -587,12 +605,12 @@ public class BattleshipMain extends Application{
 
               //Transparenz aufheben
               if(i==0){
-                  Ships.allShips[i][j].setFill(new ImagePattern(getShipPattern(j)));
-
+                 // Ships.allShips[i][j].setFill(new ImagePattern(getShipPattern(j)));
+                  Ships.allShips[i][j].setFill(Color.DARKRED);
               }
-              if(i==1){
-                  Ships.allShips[i][j].setFill(new ImagePattern(getShipPattern(j)));
-
+              if(i==1) {
+                  // Ships.allShips[i][j].setFill(new ImagePattern(getShipPattern(j)));
+                  Ships.allShips[i][j].setFill(Color.GREEN);
               }
           }
       }

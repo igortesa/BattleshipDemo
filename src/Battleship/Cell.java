@@ -9,19 +9,23 @@ import java.io.FileNotFoundException;
 
 
 public class Cell extends Rectangle {
+    boolean wasShoot;
 
-    public Cell (int type,int a , int b, int c, int d) {  // 2nd constructor for ships
-        super(a,b,c,d);
-        Image img = BattleshipMain.getShipPattern(type+10);
-        setFill(new ImagePattern(img));  // ship pattern for all ships
+    public Cell (int a , int b, int c, int d) {  // 2nd constructor for ships
+        super(a,b,c,d); // super overrides the values of the rectangle class --> a,b,c,d are from class Ship --> see our class Ship
+        this.wasShoot=false;
+}
+    public Cell (boolean wasShot,int a , int b, int c, int d) {  // 2nd constructor for  board
+        super(a, b, c, d); // super overrides the values of the rectangle class --> a,b,c,d are from class  Board --> see our class Board
+        this.wasShoot = false;
     }
 
-    public  Cell (int a, int b){ // 3rd constructor for fields of the  health
+    public  Cell (int a, int b){ // 3rd constructor for the fields of the health
         super(a,b);
         setStroke(Color.WHITE);
         FileInputStream file = null;
         try {
-            file = new FileInputStream(System.getProperty("user.dir") + "\\src\\res\\herz.png");
+            file = new FileInputStream(System.getProperty("user.dir") + "\\src\\res\\herz.png"); // small heart image
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

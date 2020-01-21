@@ -1,25 +1,19 @@
 package Battleship;
 
-import javafx.scene.image.Image;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Rectangle;
-
-import java.io.FileNotFoundException;
-
 public class Ship{
 
-   // Rectangle [][] allShips = new Rectangle[2][5];
+   // Rectangle [][] allShips = new Rectangle[2][5];  // that was like this in first version
    Cell [][] allShips = new Cell[2][5];
     double [] startX = new double[10]; //Alle Start x-Koordinaten der Schiffe für Reset und spätere Verwendung bei der Kollision (zum Rücksetzten des Schiffes)
     double [] startY = new double[10]; //Alle y-Koordinaten
     boolean[] inField = new boolean[10]; //true wenn schiff richtig positioniert, false wenn flasch
 
 
-    public Ship() throws FileNotFoundException {
-        for(int i=0;i<2;i++){
-            for(int j=0;j<5;j++){
-                this.allShips[i][j] = new Cell( j,50+j*50, 150+350*i, 30, 30+j*30);  // Abstand Höhe, schiffe reihe1 und reihe 2 , j --> for image pattern
-                //this.allShips[i][j].setFill(new ImagePattern(BattleShipMain.getShipPattern(j)));
+    public Ship() {
+        for(int i=0;i<2;i++){               // 0 = MYSHIP, 1 = ENEMYSHIP
+            for(int j=0;j<5;j++){           // 5, weil das größte schiff 5x1 quadrate hoch ist
+                this.allShips[i][j] = new Cell(50+j*50, 150+350*i, 30, 30+j*30);  //Abstand Höhe, schiffe reihe1 und reihe 2
+                this.startX[j+5*i] = this.allShips[i][j].getX();
                 this.startX[j+5*i] = this.allShips[i][j].getX();
                 this.startY[j+5*i] = this.allShips[i][j].getY();
                 this.inField[j+5*i] = false;

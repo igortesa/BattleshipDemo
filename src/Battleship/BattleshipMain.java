@@ -180,13 +180,11 @@ public class BattleshipMain extends Application{
                             Ships.allShips[finalI][finalJ].setX(mouseEvent.getSceneX()-Ships.allShips[finalI][finalJ].getWidth()/2);  //sieht kompliziert aus ist aber nur dazu da das schiff zu zentrieren
                             Ships.allShips[finalI][finalJ].setY(mouseEvent.getSceneY()-Ships.allShips[finalI][finalJ].getHeight()/2); // y Koordinate setzen
                         }
-
                         //was passiert wenn ich die Mause ziehe UND (während) die linke Maustaste gerdrückt ist
-                        if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED && mouseEvent.getButton() == MouseButton.PRIMARY){  //zum Einrasten des Schiffs
-                            Ships.allShips[finalI][finalJ].setX(mouseEvent.getX()-15);//-Ships.allShips[finalI][finalJ].getWidth()/2);  // x Koordinate setzen
-                            Ships.allShips[finalI][finalJ].setY(mouseEvent.getY()-15); //-Ships.allShips[finalI][finalJ].getHeight()/2);    // y Koordinate setzen
+                        if (mouseEvent.getEventType() == MouseEvent.MOUSE_DRAGGED && mouseEvent.getButton() == MouseButton.PRIMARY) {  //zum Einrasten des Schiffs
+                                Ships.allShips[finalI][finalJ].setX(mouseEvent.getX() - 15);//-Ships.allShips[finalI][finalJ].getWidth()/2);  // x Koordinate setzen
+                                Ships.allShips[finalI][finalJ].setY(mouseEvent.getY() - 15); //-Ships.allShips[finalI][finalJ].getHeight()/2);    // y Koordinate setzen
                         }
-
                         //was passiert wenn ich ein Schiff mit der rechten Maustaste anklicke
                         if(mouseEvent.getEventType() == MouseEvent.MOUSE_CLICKED && mouseEvent.getButton() == MouseButton.SECONDARY){ //zum Drehen des Schiffs um 90 Grad Richtung Osten;
                            //Ships.turnShip(finalI, finalJ);
@@ -212,38 +210,40 @@ public class BattleshipMain extends Application{
                             double mouseX, mouseY;
                             mouseX = mouseEvent.getSceneX();
                             mouseY = mouseEvent.getSceneY();
-                            for(int i1 = 0; i1 <10; i1++){
-                                for(int j1 = 0; j1 <10; j1++){
-                                    if(Board.myBoard[i1][j1].getX() <= mouseX && mouseX <= Board.myBoard[i1][j1].getX()+30){
-                                        if(Board.myBoard[i1][j1].getY() <= mouseY && mouseY <= Board.myBoard[i1][j1].getY()+30){
+                            for(int i1 = 0; i1 <10; i1++) {
+                                for (int j1 = 0; j1 < 10; j1++) {
+                                    if (Board.myBoard[i1][j1].getX() <= mouseX && mouseX <= Board.myBoard[i1][j1].getX() + 30) {
+                                        if (Board.myBoard[i1][j1].getY() <= mouseY && mouseY <= Board.myBoard[i1][j1].getY() + 30) {
                                             //System.out.println(""+i+"\n"+j);
                                             double middleX, middleY; //mitte des Kästchens über welchem die Maus ist, dieses muss gleich der Mitte des Schiffes werden
-                                            middleX = Board.myBoard[i1][j1].getX()+Board.myBoard[i1][j1].getWidth()/2;
-                                            middleY = Board.myBoard[i1][j1].getY()+Board.myBoard[i1][j1].getHeight()/2;
+                                            middleX = Board.myBoard[i1][j1].getX() + Board.myBoard[i1][j1].getWidth() / 2;
+                                            middleY = Board.myBoard[i1][j1].getY() + Board.myBoard[i1][j1].getHeight() / 2;
 
-                                            Ships.allShips[finalI][finalJ].setX(middleX-Board.myBoard[i1][j1].getWidth()/2);
-                                            Ships.allShips[finalI][finalJ].setY(middleY-Board.myBoard[i1][j1].getHeight()/2);
-                                            if(finalI == 1){
-                                                Ships.inField[finalJ+5*finalI] = true;
+                                            Ships.allShips[finalI][finalJ].setX(middleX - Board.myBoard[i1][j1].getWidth() / 2);
+                                            Ships.allShips[finalI][finalJ].setY(middleY - Board.myBoard[i1][j1].getHeight() / 2);
+                                            if (finalI == 1) {
+                                                Ships.inField[finalJ + 5 * finalI] = true;
                                                 dropSound();
                                             }
                                         }
                                     }
-                                    if(Board.enemyBoard[i1][j1].getX() <= mouseX && mouseX <= Board.enemyBoard[i1][j1].getX()+30){
-                                        if(Board.enemyBoard[i1][j1].getY() <= mouseY && mouseY <= Board.enemyBoard[i1][j1].getY()+30){
-                                            //System.out.println(""+i+"\n"+j);
-                                            double middleX, middleY; //mitte des Kästchens über welchem die Maus ist, dieses muss gleich der Mitte des Schiffes werden
-                                            middleX = Board.enemyBoard[i1][j1].getX()+Board.enemyBoard[i1][j1].getWidth()/2;
-                                            middleY = Board.enemyBoard[i1][j1].getY()+Board.enemyBoard[i1][j1].getHeight()/2;
 
-                                            Ships.allShips[finalI][finalJ].setX(middleX-Board.enemyBoard[i1][j1].getWidth()/2);
-                                            Ships.allShips[finalI][finalJ].setY(middleY-Board.enemyBoard[i1][j1].getHeight()/2);
-                                            if(finalI == 0){
-                                                Ships.inField[finalJ+5*finalI] = true;
-                                                dropSound();
+                                        if (Board.enemyBoard[i1][j1].getX() <= mouseX && mouseX <= Board.enemyBoard[i1][j1].getX() + 30) {
+                                            if (Board.enemyBoard[i1][j1].getY() <= mouseY && mouseY <= Board.enemyBoard[i1][j1].getY() + 30) {
+                                                //System.out.println(""+i+"\n"+j);
+                                                double middleX, middleY; //mitte des Kästchens über welchem die Maus ist, dieses muss gleich der Mitte des Schiffes werden
+                                                middleX = Board.enemyBoard[i1][j1].getX() + Board.enemyBoard[i1][j1].getWidth() / 2;
+                                                middleY = Board.enemyBoard[i1][j1].getY() + Board.enemyBoard[i1][j1].getHeight() / 2;
+
+                                                Ships.allShips[finalI][finalJ].setX(middleX - Board.enemyBoard[i1][j1].getWidth() / 2);
+                                                Ships.allShips[finalI][finalJ].setY(middleY - Board.enemyBoard[i1][j1].getHeight() / 2);
+                                                if (finalI == 0) {
+                                                    Ships.inField[finalJ + 5 * finalI] = true;
+                                                    dropSound();
+                                                }
                                             }
                                         }
-                                    }
+
                                     //Falls schiff vom board weggezogen wird
                                     if(Ships.allShips[finalI][finalJ].getX() < Board.enemyBoard[0][0].getX()){
                                         Ships.inField[finalJ+5*finalI] = false;
@@ -274,6 +274,7 @@ public class BattleshipMain extends Application{
                                                     //Board.myBoard[i][j].setFill(Color.RED);
                                                     Board.myBoard[i1][j1].wasShoot=true;
                                                     playerMove=true;
+                                                    announcement.setText("Player 2 your turn!");
                                                 }
                                             }
                                             if (Board.enemyBoard[i1][j1].getX() < mouseX && mouseX < Board.enemyBoard[i1][j1].getX() + 30) {
@@ -284,6 +285,7 @@ public class BattleshipMain extends Application{
                                                     Board.enemyBoard[i1][j1].wasShoot=true;
                                                     //  Board.enemyBoard[i][j].setFill(Color.RED);
                                                     enemyMove=true;
+                                                    announcement.setText("Player 1 your turn!");
                                                 }
 
                                             }
@@ -302,18 +304,21 @@ public class BattleshipMain extends Application{
                 int finalJ = j;
                 Board.enemyBoard[i][j].addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
                     //Das Feld in dem ich mich befinde darf natürlich nicht rot sein
-                    if (Board.enemyBoard[finalI][finalJ].getFill() != Color.RED && play && enemyMove) {
+                    if (Board.enemyBoard[finalI][finalJ].getFill() != Color.RED && play && enemyMove && !Board.enemyBoard[finalI][finalJ].wasShoot) {
                         waterSound();
                         Board.enemyBoard[finalI][finalJ].setFill(Color.GREEN);
+                        Board.enemyBoard[finalI][finalJ].wasShoot=true;
+
                         enemyMove=false;
                         playerMove=true;
                         announcement.setText("Player 2 your turn!");
                     }
                 });
                 Board.myBoard[i][j].addEventHandler(MouseEvent.MOUSE_CLICKED, mouseEvent -> {
-                    if(Board.myBoard[finalI][finalJ].getFill() != Color.RED && play && playerMove){
+                    if(Board.myBoard[finalI][finalJ].getFill() != Color.RED && play && playerMove && !Board.myBoard[finalI][finalJ].wasShoot){
                        waterSound();
                         Board.myBoard[finalI][finalJ].setFill(Color.GREEN);
+                        Board.myBoard[finalI][finalJ].wasShoot=true;
                         playerMove=false;
                         enemyMove=true;
                         announcement.setText("Player 1 your turn!");
@@ -428,7 +433,6 @@ public class BattleshipMain extends Application{
                 if(shapes[finalJ+5*finalI] != shapes[i]){ //Außer mit eigenem Umriss
                     Ships.resetShip(finalI, finalJ);
                 }
-
             }
         }
         //Prüfung, ob Schiff in falschen 10x10 Raster eingegeben wurde. (zb rotes Schiff in grünes Feld)
@@ -456,9 +460,11 @@ public class BattleshipMain extends Application{
 
         userInteraction();
 
-        if(play){
-            announcement.setText("Start!\n --> Player 1 your turn!");
+       /*if(play){
+            announcement.setText("Start --> Player 1 your turn!");
         }
+
+        */
     }
 
     public void hideEnemyShips() {
@@ -504,7 +510,7 @@ public class BattleshipMain extends Application{
             }
         }
         if(counter==10){
-            announcement.setText("Start!");
+            announcement.setText("Start --> Player 1 your turn!");
             play = true;
         }
     }
@@ -539,10 +545,10 @@ public class BattleshipMain extends Application{
     public void updateEnemyHealth(int counter){  // update current state of the player's 1 health
         enemyHealth.getChildren().remove(counter);
         eHealth--;
-        eLabel.setText("Player 1 Health: "+(eHealth+1));
+        eLabel.setText("Player 2 Health: "+(eHealth+1));
         if(eHealth==-1) {
             popUpWindow.setVisible(true);
-            popUpLabel.setText("Player 2 Won! ");
+            popUpLabel.setText("Player 1 Won! ");
             announcement.setText("GAME OVER !");
         }
 
@@ -550,10 +556,10 @@ public class BattleshipMain extends Application{
     public void updatePlayerHealth(int counter){  // update current state of the player's 2 health
         playerHealth.getChildren().remove(counter);
         pHealth--;
-        pLabel.setText("Player 2 Health: "+(pHealth+1));
+        pLabel.setText("Player 1 Health: "+(pHealth+1));
         if(pHealth==-1) {
             popUpWindow.setVisible(true);
-            popUpLabel.setText("Player 1 Won! ");
+            popUpLabel.setText("Player 2 Won! ");
             announcement.setText("GAME OVER !");
         }
 
@@ -577,8 +583,8 @@ public class BattleshipMain extends Application{
       pLabel.setTranslateY(400); // 50
       eLabel.setFont(new Font(20));
       pLabel.setFont(new Font(20));
-      eLabel.setText("Player 1 Health: "+(eHealth+1));
-      pLabel.setText("Player 2 Health: "+(pHealth+1));
+      eLabel.setText("Player 2 Health: "+(eHealth+1));
+      pLabel.setText("Player 1 Health: "+(pHealth+1));
 
   }
 
@@ -619,6 +625,8 @@ public class BattleshipMain extends Application{
           for(int j=0; j<10; j++){
               Board.myBoard[i][j].setFill(new ImagePattern(getWaterPattern()));
               Board.enemyBoard[i][j].setFill(new ImagePattern(getWaterPattern()));
+              Board.myBoard[i][j].wasShoot=false;
+              Board.enemyBoard[i][j].wasShoot=false;
           }
       }
       //reset game status
@@ -643,6 +651,8 @@ public class BattleshipMain extends Application{
       pHealth=14; // set health to 14 again
       createHealth(); // it makes health again
       popUpWindow.setVisible(false); // set pop up window invisible again
+      enemyMove=true;
+      playerMove=false;
   }
 
     public static Image getWaterPattern() {  // water pattern for fields on board
@@ -655,7 +665,7 @@ public class BattleshipMain extends Application{
         assert file != null;
         return new Image(file);
     }
-
+/*
     public static Image getShipPattern(int i){
         FileInputStream file = null;
         try {
@@ -666,6 +676,8 @@ public class BattleshipMain extends Application{
         assert file != null;
         return new Image(file);
     }
+
+ */
 
     public Image getFireImage(){
         FileInputStream file = null;

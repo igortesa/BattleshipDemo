@@ -15,7 +15,7 @@ public class Cell extends Rectangle {
         super(a,b,c,d); // super overrides the values of the rectangle class --> a,b,c,d are from class Ship --> see our class Ship
         this.wasShoot=false;
 }
-    public Cell (boolean wasShot,int a , int b, int c, int d) {  // 2nd constructor for  board
+    public Cell (boolean wasShoot,int a , int b, int c, int d) {  // 2nd constructor for  board
         super(a, b, c, d); // super overrides the values of the rectangle class --> a,b,c,d are from class  Board --> see our class Board
         this.wasShoot = false;
     }

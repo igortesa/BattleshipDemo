@@ -12,8 +12,8 @@ public class Ship{
     public Ship() {
         for(int i=0;i<2;i++){               // 0 = MYSHIP, 1 = ENEMYSHIP
             for(int j=0;j<5;j++){           // 5, weil das größte schiff 5x1 quadrate hoch ist
-                this.allShips[i][j] = new Cell(50+j*50, 150+350*i, 30, 30+j*30);  //Abstand Höhe, schiffe reihe1 und reihe 2
-                this.startX[j+5*i] = this.allShips[i][j].getX();
+                this.allShips[i][j] = new Cell(j,50+j*50, 150+350*i, 30, 30+j*30);  //Abstand Höhe, schiffe reihe1 und reihe 2
+              //  this.startX[j+5*i] = this.allShips[i][j].getX();
                 this.startX[j+5*i] = this.allShips[i][j].getX();
                 this.startY[j+5*i] = this.allShips[i][j].getY();
                 this.inField[j+5*i] = false;

@@ -3,13 +3,17 @@ package Battleship;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 
 public class Board {
 
     Cell [][] myBoard = new Cell[10][10];
     Cell [][] enemyBoard = new Cell[10][10];
     Line [] frames = new Line[8];
+    double [] startX = new double[100];
+    double [] startY = new double[100];
+    double [] startX1 = new double[100];
+    double [] startY1 = new double[100];
+
 
     public Board()  // konstruktor
     {
@@ -18,13 +22,18 @@ public class Board {
                 this.enemyBoard[j][i] = new Cell(false,450+30*j, 50+30*i, 30, 30);
                 this.enemyBoard[j][i].setFill(new ImagePattern(BattleshipMain.getWaterPattern())); // water image pattern
                 this.enemyBoard[j][i].setStroke(Color.WHITE);
+                this.startX[j+10*i] = this.enemyBoard[j][i].getX(); // koordinate für bot
+                this.startY[j+10*i] = this.enemyBoard[j][i].getY(); // koordinate für bot
             }
         }
+
         for(int j=0;j<10;j++) {
             for (int i = 0; i < 10; i++) {
-                this.myBoard[j][i] = new Cell(450+30*j, 420+30*i, 30, 30);
+                this.myBoard[j][i] = new Cell(false,false,450+30*j, 420+30*i, 30, 30);
                 this.myBoard[j][i].setFill(new ImagePattern(BattleshipMain.getWaterPattern())); // water image pattern
                 this.myBoard[j][i].setStroke(Color.WHITE);
+                this.startX1[j+10*i] = this.enemyBoard[j][i].getX();
+                this.startY1[j+10*i] = this.enemyBoard[j][i].getY();
             }
         }
 
